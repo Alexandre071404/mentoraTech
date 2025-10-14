@@ -19,5 +19,6 @@ final class CalculatorTest extends TestCase
     public function testAdditionNegativeNumbers(): void
     {
         $this->assertSame(-4, Calculator::add(-2, -3)); // échouera (résultat attendu: -5)
+        // kjds
     }
 }

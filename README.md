@@ -8,7 +8,7 @@ Exemple minimal pour l'atelier CI/CD avec **PHPUnit**
 composer install
 ```
 
-## Lancer les tests
+## Lancer les test
 
 ```bash
 composer test

@@ -1,6 +1,6 @@
 # mtech (PHP)
 
-Exemple minimal pour l'atelier CI/CD avec **PHPUnit** push alex.
+Exemple minimal pour l'atelier CI/CD avec **PHPUnit**
 
 ## Installation
 

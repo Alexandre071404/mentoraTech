@@ -37,6 +37,6 @@ jobs:
           push: true
           tags: |
             ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:latest
-            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:sha-${env.SHORT_SHA}
+            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:sha-${{ env.SHORT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

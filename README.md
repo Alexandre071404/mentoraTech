@@ -2,7 +2,7 @@
 
 Exemple minimal pour l'atelier CI/CD avec **PHPUnit**
 
-## Installation
+## Installationfesf
 
 ```bash
 composer install

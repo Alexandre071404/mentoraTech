@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mtech\Tests;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Mtech\Calculator;
 
@@ -11,8 +12,8 @@ final class CalculatorTest extends TestCase
 {
   public function testAdditionPositiveNumbers(): void
   {
-    ///$this->assertSame(5, Calculator::add(2, 3));
-    $this->assertSame(5, 5);
+    throw new Exception();
+    // $this->assertSame(5, 5);
   }
 
 

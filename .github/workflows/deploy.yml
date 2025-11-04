@@ -36,7 +36,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.REGISTRY_HOST }}/image_de_bg:latest
-            ${{ secrets.REGISTRY_HOST }}/image_de_bg:sha-${GITHUB_SHA::7}
+            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:latest
+            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:sha-${SHORT_SHA}
           cache-from: type=gha
           cache-to: type=gha,mode=max

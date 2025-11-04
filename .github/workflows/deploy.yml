@@ -1,4 +1,4 @@
-name: Docker Build and Push to Scaleway Registry
+name: Publication sur le registre Scaleway
 
 on:
   push:
@@ -7,10 +7,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push:
+  test:
     runs-on: ubuntu-latest
 
-    if: contains(github.event.head_commit.message, '#deploy') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, xml, pdo, mysql
+          coverage: none
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run Tests
+        run: vendor/bin/phpunit
+
+  build-push:
+    runs-on: ubuntu-latest
+    needs: test
+
+    if: |
+      needs.test.result == 'success' && 
+      (contains(github.event.head_commit.message, '#deploy') || github.event_name == 'workflow_dispatch')
 
     steps:
       - name: Checkout Repository
@@ -30,7 +53,6 @@ jobs:
           username: nologin
           password: ${{ secrets.SCW_SECRET_KEY }}
 
-      # --- Étape de Construction et Push ---
       - name: Build and Push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -39,6 +61,49 @@ jobs:
           push: true
           tags: |
             ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:latest
-            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:${{ env.SHORT_SHA }}
+            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:sha-${{ env.SHORT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  notify-success:
+    runs-on: ubuntu-latest
+    needs: build-push
+    if: needs.build-push.result == 'success'
+
+    steps:
+      - name: Send Slack Notification on Success
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_USERNAME: "GitHub Actions (CI/CD)"
+          SLACK_TITLE: "✅ Déploiement Réussi"
+          SLACK_MESSAGE: "L'image a été construite et poussée sur Scaleway avec succès."
+          SLACK_COLOR: "good"
+          SLACK_FOOTER: "${{ github.repository }}"
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    if: always() && (needs.test.result == 'failure' || needs.build-push.result == 'failure')
+    needs: [test, build-push] # Dépend des deux jobs
+
+    steps:
+      - name: Determine Failure Step
+        id: failure_step
+        run: |
+          if [ "${{ needs.test.result }}" == "failure" ]; then
+            echo "MESSAGE=Build échoué : Les tests ont échoué." >> $GITHUB_ENV
+          elif [ "${{ needs.build-push.result }}" == "failure" ]; then
+            echo "MESSAGE=Build échoué : La publication de l'image Docker a échoué." >> $GITHUB_ENV
+          else
+            echo "MESSAGE=Build échoué : Erreur inconnue." >> $GITHUB_ENV
+          fi
+
+      - name: Send Slack Notification on Failure
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_USERNAME: "GitHub Actions (CI/CD)"
+          SLACK_TITLE: "❌ Échec du Workflow"
+          SLACK_MESSAGE: "${{ env.MESSAGE }}"
+          SLACK_COLOR: "danger" # Rouge
+          SLACK_FOOTER: "${{ github.repository }}"

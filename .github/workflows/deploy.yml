@@ -10,6 +10,8 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    if: contains(github.event.head_commit.message, '#deploy') || github.event_name == 'workflow_dispatch'
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -37,6 +39,6 @@ jobs:
           push: true
           tags: |
             ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:latest
-            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:sha-${{ env.SHORT_SHA }}
+            ${{ secrets.REGISTRY_HOST }}/moueteaux_parcheminer_transon:${{ env.SHORT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

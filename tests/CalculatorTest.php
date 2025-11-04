@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Mtech\Tests;
@@ -8,16 +9,17 @@ use Mtech\Calculator;
 
 final class CalculatorTest extends TestCase
 {
-    public function testAdditionPositiveNumbers(): void
-    {
-        $this->assertSame(5, Calculator::add(2, 3));
-    }
+  public function testAdditionPositiveNumbers(): void
+  {
+    ///$this->assertSame(5, Calculator::add(2, 3));
+    $this->assertSame(4, 5);
+  }
 
 
-    // Test volontairement erroné pour l'activité "Erreur et correction"
-    // public function testAdditionNegativeNumbers(): void
-    // {
-    //     $this->assertSame(-4, Calculator::add(-2, -3)); // échouera (résultat attendu: -5)
-    //     // kjds
-    // }
+  // Test volontairement erroné pour l'activité "Erreur et correction"
+  // public function testAdditionNegativeNumbers(): void
+  // {
+  //     $this->assertSame(-4, Calculator::add(-2, -3)); // échouera (résultat attendu: -5)
+  //     // kjds
+  // }
 }

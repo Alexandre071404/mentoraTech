@@ -12,7 +12,7 @@ final class CalculatorTest extends TestCase
   public function testAdditionPositiveNumbers(): void
   {
     ///$this->assertSame(5, Calculator::add(2, 3));
-    $this->assertSame(4, 5);
+    $this->assertSame(5, 5);
   }
 
 

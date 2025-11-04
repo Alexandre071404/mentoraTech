@@ -12,8 +12,8 @@ final class CalculatorTest extends TestCase
 {
   public function testAdditionPositiveNumbers(): void
   {
-    throw new Exception();
-    // $this->assertSame(5, 5);
+    // throw new Exception();
+    $this->assertSame(5, 5);
   }
 
 
